@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <%- include('partials/nav.ejs')  %>
+
+    <form method="POST">
+        <p>Name</p>
+        <input type="text" name="name" value="<%=locals.character ? character.name : "" %>">
+        <p>Race</p>
+        <input type="text" name="race" value="<%=locals.character ? character.race : "" %>">
+        <p>Class</p>
+        <input type="text" name="class" value="<%=locals.character ? character.class : "" %>">
+        <p>Level</p>
+        <input type="number" name="level" value="<%=locals.character ? character.level : "" %>">
+        <p>Strength</p>
+        <input type="number" name="strength" value="<%=locals.character ? character.strength : "" %>">
+        <p>Agility</p>
+        <input type="number" name="agility" value="<%=locals.character ? character.agility : "" %>">
+        <p>Intellect</p>
+        <input type="number" name="intellect" value="<%=locals.character ? character.intellect : "" %>">
+        <p>hide my character profile publicly</p>
+        <label>
+            <input type="checkbox" name="ishidden" <%= locals.character && character.ishidden ? 'checked' : '' %>>
+            <span class="slider"></span>
+        </label>
+        <button type="submit">Submit</button>
+        <button type="button"><a href="/">Cancel</a></button>
+        <%= locals.message %> 
+    </form>
+
+    <% if(locals.characters) { %>
+        <h1>All Characters</h1>
+        <% characters.forEach(chr =>{ %>
+                <h2 href="/preview/character/<%= chr._id %>"><%= chr.name %></h2>
+                <a href="/edit/character/<%= chr._id %>"> edit </a>
+                <a href="/delete/character/<%= chr._id %>" onclick="return confirm('are you sure?')"> delete </a>
+            <% }); %>
+    <% } %>
+</body>
+</html>
