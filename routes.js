@@ -77,6 +77,7 @@ module.exports = (app) => {
         }
     });
 
+    
     app.get('/edit/character/:characterId', async (req, res)=>{
         try{
             let character = await Character.findById(req.params.characterId);
