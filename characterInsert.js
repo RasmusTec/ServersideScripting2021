@@ -7,7 +7,7 @@ db.characters.insert([{
     agility: 32,
     intellect: 11,
     ishidden: false,
-    imagename: null
+    image: ''
 }, {
     name: 'Svend',
     race: 'Dwarf',
@@ -17,7 +17,7 @@ db.characters.insert([{
     agility: 32,
     intellect: 11,
     ishidden: false,
-    imagename: null
+    image: ''
 }, {
     name: 'Peter',
     race: 'Human',
@@ -27,5 +27,5 @@ db.characters.insert([{
     agility: 32,
     intellect: 11,
     ishidden: true,
-    imagename: null
+    image: ''
 }]);

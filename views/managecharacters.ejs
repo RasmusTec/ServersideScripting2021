@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/script.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -32,8 +33,13 @@
         </label>
         <div>
             <label>Character Image</label>
-            <input type="file" name="image">
-            <%- locals.character && locals.character.imagename != '' ? `<img src="/images/${locals.character.imagename}" style="width: 200px; height: auto;"` : '' %>
+            <input type="file" name="image" id="imageName">
+            <div>
+                <%- locals.character && locals.character.image ? `<img id="imageView" src="/images/${locals.character.image}" style="width: 200px; height: auto;"` : '' %>
+            </div>
+            <% if(locals.character && locals.character.image != '') {  %>
+                <button type="button" onclick="clearImage()"> delete </button>
+            <% } %> 
         </div>
         <div>
             <button type="submit">Submit</button>

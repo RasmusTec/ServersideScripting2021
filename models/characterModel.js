@@ -10,7 +10,7 @@ const Character = new Schema({
     agility: {type:Number},
     intellect: {type:Number},
     ishidden: {type:Boolean},
-    imagename: {type:String}
+    image: {type:String}
 }, {
     versionKey: false
 });

@@ -1,6 +1,7 @@
 const { Mongoose } = require('mongoose');
 const Character = require('./models/characterModel');
 const fs = require('fs');
+const { ok } = require('assert');
 
 
 async function getCharacters(){
@@ -69,7 +70,7 @@ module.exports = (app) => {
         if(message.length == 0){
             if(req.files != undefined && req.files.image != undefined){
                 await req.files.image.mv(`./public/images/${req.files.image.name}`);
-                character.imagename = req.files.image.name;
+                character.image = req.files.image.name;
             }
             character.save();
             res.redirect('/');
@@ -84,19 +85,18 @@ module.exports = (app) => {
         }
     });
 
-
     app.get('/edit/character/:characterId', async (req, res)=>{
-        try{
-            let character = await Character.findById(req.params.characterId);
-            if (character != null){               
-                res.render('managecharacters',{
-                    character
-                });
-            }
-        }catch{
+    try{
+        let character = await Character.findById(req.params.characterId);
+        if (character != null){               
+            res.render('managecharacters',{
+                 character
+            });
+        }
+    }catch{
                 res.redirect('/');
-            }
-        });
+        }
+    });
 
     app.post('/edit/character/:characterId', async (req, res)=>{
         let message = []
@@ -137,15 +137,13 @@ module.exports = (app) => {
         req.body.ishidden = (req.body.ishidden == "on" ? true : false);
 
         if(message.length == 0){
-            
+            let character = await Character.findById(req.params.characterId);
+            if(fs.existsSync(`./public/images/${character.image}`) && character.image != ''){
+                await fs.unlinkSync(`./public/images/${character.image}`);
+            }
             if(req.files != undefined && req.files.image != undefined){
-                let character = await Character.findById(req.params.characterId);     
-                let image = `./public/images/${character.imagename}`;
-                if(fs.existsSync(image)){
-                    fs.unlinkSync(image);
-                }
-                //await req.files.image.mv(`./public/images/${req.files.image.name}`);
-                //req.body.image = req.files.image.name;
+                await req.files.image.mv(`./public/images/${req.files.image.name}`);
+                req.body.image = req.files.image.name;
             }
 
             await Character.findByIdAndUpdate(req.params.characterId, req.body);
