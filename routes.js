@@ -1,14 +1,16 @@
 const { Mongoose } = require('mongoose');
 const Character = require('./models/characterModel');
+const fs = require('fs');
+
+
+async function getCharacters(){
+    return await Character
+    .find() 
+    .collation({locale:'en'})
+    .sort({'name:':'asc'});
+}
 
 module.exports = (app) => {
-
-    async function getCharacters(){
-        return await Character
-        .find() 
-        .collation({locale:'en'})
-        .sort({'name:':'asc'});
-    }
 
     app.get('/', async (req, res)=>{
         let characters = await getCharacters();
@@ -62,8 +64,13 @@ module.exports = (app) => {
             message.push('intellect required');
         }
 
+        character.ishidden = (req.body.read == "on" ? true : false);
+
         if(message.length == 0){
-            character.ishidden = (req.body.read == "on" ? true : false);
+            if(req.files != undefined && req.files.image != undefined){
+                await req.files.image.mv(`./public/images/${req.files.image.name}`);
+                character.imagename = req.files.image.name;
+            }
             character.save();
             res.redirect('/');
         }
@@ -77,7 +84,7 @@ module.exports = (app) => {
         }
     });
 
-    
+
     app.get('/edit/character/:characterId', async (req, res)=>{
         try{
             let character = await Character.findById(req.params.characterId);
@@ -127,8 +134,20 @@ module.exports = (app) => {
             message.push('intellect required');
         }
 
+        req.body.ishidden = (req.body.ishidden == "on" ? true : false);
+
         if(message.length == 0){
-            req.body.ishidden = (req.body.ishidden == "on" ? true : false);
+            
+            if(req.files != undefined && req.files.image != undefined){
+                let character = await Character.findById(req.params.characterId);     
+                let image = `./public/images/${character.imagename}`;
+                if(fs.existsSync(image)){
+                    fs.unlinkSync(image);
+                }
+                //await req.files.image.mv(`./public/images/${req.files.image.name}`);
+                //req.body.image = req.files.image.name;
+            }
+
             await Character.findByIdAndUpdate(req.params.characterId, req.body);
             res.redirect('/');
         }
