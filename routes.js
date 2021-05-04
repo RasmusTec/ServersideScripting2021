@@ -1,14 +1,20 @@
 const { Mongoose } = require('mongoose');
 const Character = require('./models/characterModel');
 const fs = require('fs');
-const { ok } = require('assert');
-
+const { v4: uuidv4 } = require('uuid');
+const path = require('path');
 
 async function getCharacters(){
     return await Character
     .find() 
     .collation({locale:'en'})
     .sort({'name:':'asc'});
+}
+
+const imagePath = './public/images/';
+
+function createUniqueName(filename){
+    return uuidv4() + path.extname(filename);
 }
 
 module.exports = (app) => {
@@ -68,9 +74,12 @@ module.exports = (app) => {
         character.ishidden = (req.body.read == "on" ? true : false);
 
         if(message.length == 0){
-            if(req.files != undefined && req.files.image != undefined){
-                await req.files.image.mv(`./public/images/${req.files.image.name}`);
-                character.image = req.files.image.name;
+            if(req.files != undefined && req.files.image != undefined && req.files.image.name != ''){
+                let filename = createUniqueName(req.files.image.name);
+                await req.files.image.mv(imagePath+ filename);
+                character.image = filename;
+            }else{
+                character.image = 'default.png';
             }
             character.save();
             res.redirect('/');
@@ -87,12 +96,10 @@ module.exports = (app) => {
 
     app.get('/edit/character/:characterId', async (req, res)=>{
     try{
-        let character = await Character.findById(req.params.characterId);
-        if (character != null){               
-            res.render('managecharacters',{
-                 character
-            });
-        }
+        let character = await Character.findById(req.params.characterId);           
+        res.render('managecharacters',{
+            character
+        });
     }catch{
                 res.redirect('/');
         }
@@ -138,12 +145,16 @@ module.exports = (app) => {
 
         if(message.length == 0){
             let character = await Character.findById(req.params.characterId);
-            if(fs.existsSync(`./public/images/${character.image}`) && character.image != ''){
-                await fs.unlinkSync(`./public/images/${character.image}`);
+            if(fs.existsSync(imagePath + character.image) && character.image != 'default.png'){
+                await fs.unlinkSync(imagePath + character.image);
+                req.body.image = 'default.png';
             }
-            if(req.files != undefined && req.files.image != undefined){
-                await req.files.image.mv(`./public/images/${req.files.image.name}`);
-                req.body.image = req.files.image.name;
+            if(req.files != undefined && req.files.image != undefined && req.files.image.name != ''){
+                let filename = createUniqueName(req.files.image.name);
+                await req.files.image.mv(imagePath+ filename);
+                req.body.image = filename;
+            }else{
+                req.body.image = 'default.png';
             }
 
             await Character.findByIdAndUpdate(req.params.characterId, req.body);
@@ -159,9 +170,21 @@ module.exports = (app) => {
 
     app.get('/delete/character/:characterId', async (req, res)=>{
         try{
+            let character = await Character.findById(req.params.characterId);
+            if(fs.existsSync(imagePath + character.image) && character.image != 'default.png'){
+                await fs.unlinkSync(imagePath + character.image);
+            }
             await Character.findByIdAndDelete(req.params.characterId);
+            res.redirect('/');
         }catch{
             res.redirect('/');
         }
+    });
+
+    app.get('/preview/character/:characterId', async(req, res)=>{
+        let character = await Character.findById(req.params.characterId);
+        res.render('viewcharacter',{
+            character
+        });
     });
 }

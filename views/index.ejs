@@ -1,26 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/style.css">
-    <title>Character Database!</title>
+    <title>Character Database</title>
 </head>
+
 <body>
 
     <%- include('partials/nav.ejs')  %>
 
 
-    <% if(locals.characters) { %>
-        <h1>Characters Found</h1>
+    <div class="container">
+        <h1>Public Characters Found</h1>
+        <% if(locals.characters) { %>
         <% characters.forEach(chr =>{ %>
-            <% if(!chr.ishidden) { %>
-                <h2 href="/preview/character/<%= chr._id %>"><%= chr.name %></h2>
-                <a href="/edit/character/<%= chr._id %>"> edit </a>
-                <a href="/delete/character/<%= chr._id %>" onclick="return confirm('are you sure?')"> delete </a>
-                <% } %>
-            <% }); %>
-    <% } %>
+        <% if(!chr.ishidden) { %>
+        <div class="content-container">
+            <div class="header-character">
+
+                <div class="header-character-image">
+                    <%- chr.image ? `<img id="imageView" src="/images/${chr.image}" style="width: 200px; height: 200px;"/>` : '' %>
+                </div>
+                <div class="header-character-info">
+                    <a href="/preview/character/<%= chr._id %>"><h1><%= chr.name %></h1></a>
+
+                </div>
+            </div>
+            <div>
+                <a href="/edit/character/<%= chr._id %>"> [EDIT] </a>
+                <a href="/delete/character/<%= chr._id %>" onclick="return confirm('are you sure?')"> [DELETE] </a>
+            </div>
+        </div>
+        <% } %>
+        <% }); %>
+        <% } %>
+    </div>
 </body>
+
 </html>

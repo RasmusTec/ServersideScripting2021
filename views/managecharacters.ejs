@@ -1,60 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
     <script src="/script.js"></script>
-    <title>Document</title>
+    <title>Manage Characters</title>
 </head>
+
 <body>
-    
+
     <%- include('partials/nav.ejs')  %>
 
-    <form method="POST" enctype="multipart/form-data">
-        <p>Name</p>
-        <input type="text" name="name" value="<%=locals.character ? character.name : "" %>">
-        <p>Race</p>
-        <input type="text" name="race" value="<%=locals.character ? character.race : "" %>">
-        <p>Class</p>
-        <input type="text" name="class" value="<%=locals.character ? character.class : "" %>">
-        <p>Level</p>
-        <input type="number" name="level" value="<%=locals.character ? character.level : "" %>">
-        <p>Strength</p>
-        <input type="number" name="strength" value="<%=locals.character ? character.strength : "" %>">
-        <p>Agility</p>
-        <input type="number" name="agility" value="<%=locals.character ? character.agility : "" %>">
-        <p>Intellect</p>
-        <input type="number" name="intellect" value="<%=locals.character ? character.intellect : "" %>">
-        <p>hide my character profile publicly</p>
-        <label>
-            <input type="checkbox" name="ishidden" <%= locals.character && character.ishidden ? 'checked' : '' %>>
-            <span class="slider"></span>
-        </label>
-        <div>
-            <label>Character Image</label>
-            <input type="file" name="image" id="imageName">
-            <div>
-                <%- locals.character && locals.character.image ? `<img id="imageView" src="/images/${locals.character.image}" style="width: 200px; height: auto;"` : '' %>
-            </div>
-            <% if(locals.character && locals.character.image != '') {  %>
-                <button type="button" onclick="clearImage()"> delete </button>
-            <% } %> 
+    <div class="container">
+        <div class="manage-container">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="manage-character-container">
+                    <div class="manage-character-left">
+                        <p>Name</p>
+                        <input type="text" name="name" value="<%=locals.character ? character.name : "" %>">
+                        <p>Race</p>
+                        <input type="text" name="race" value="<%=locals.character ? character.race : "" %>">
+                        <p>Class</p>
+                        <input type="text" name="class" value="<%=locals.character ? character.class : "" %>">
+                        <p>Level</p>
+                        <input type="number" name="level" value="<%=locals.character ? character.level : "" %>">
+                    </div>
+                    <div class="manage-character-right">
+                        <p>Strength</p>
+                        <input type="number" name="strength" value="<%=locals.character ? character.strength : "" %>">
+                        <p>Agility</p>
+                        <input type="number" name="agility" value="<%=locals.character ? character.agility : "" %>">
+                        <p>Intellect</p>
+                        <input type="number" name="intellect" value="<%=locals.character ? character.intellect : "" %>">
+                        <p>hide my character profile publicly</p>
+                        <label>
+                            <input type="checkbox" name="ishidden"
+                                <%= locals.character && character.ishidden ? 'checked' : '' %>>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label>Character Image</label>
+                    <input type="file" name="image" id="imageName">
+                    <div>
+                        <%- locals.character && locals.character.image ? `<img id="imageView" src="/images/${locals.character.image}" style="width: 200px; height: 200px;"` : '' %>
+                    </div>
+                    <% if(locals.character && locals.character.image != '') {  %>
+                    <button type="button" onclick="clearImage()"> delete </button>
+                    <% } %>
+                </div>
+                <div class="manage-character-footer">
+                    <button type="submit" class="manage-character-btn">Submit</button>
+                    <button type="button" class="manage-character-btn"><a href="/">Cancel</a></button>
+                    <%= locals.message %>
+                </div>
+            </form>
         </div>
-        <div>
-            <button type="submit">Submit</button>
-            <button type="button"><a href="/">Cancel</a></button>
-            <%= locals.message %> 
-        </div>
-    </form>
+    </div>
 
     <% if(locals.characters) { %>
-        <h1>All Characters</h1>
-        <% characters.forEach(chr =>{ %>
-                <h2 href="/preview/character/<%= chr._id %>"><%= chr.name %></h2>
-                <a href="/edit/character/<%= chr._id %>"> edit </a>
-                <a href="/delete/character/<%= chr._id %>" onclick="return confirm('are you sure?')"> delete </a>
-            <% }); %>
+    <h1>All Characters</h1>
+    <% characters.forEach(chr =>{ %>
+        <div class="character-view">
+            <h2 href="/preview/character/<%= chr._id %>"><%= chr.name %></h2>
+            <a href="/edit/character/<%= chr._id %>"> edit </a>
+            <a href="/delete/character/<%= chr._id %>" onclick="return confirm('are you sure?')"> delete </a>
+        </div>
+    <% }); %>
     <% } %>
 </body>
+
 </html>
