@@ -7,6 +7,13 @@ app.use(logger('dev',{
     skip: req => !req.url.endsWith('.html') && req.url.indexOf('.') > -1
 }));
 
+const fileupload = require('express-fileupload');
+app.use(fileupload({
+    limits:{
+        filesize: 10* 1024 * 1024
+    }
+}));
+
 app.use(express.urlencoded({extended:true}));
 app.use(express.json())
 

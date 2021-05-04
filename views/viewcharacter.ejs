@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/style.css">
+        <title>Character - <%= locals.character ? character.name : "" %> </title>
+    </head>
+<body>
+
+    <%- include('partials/nav.ejs')  %>
+    
+    <div class="container">
+        <% if(locals.character && !character.ishidden) { %>
+        <div class="character-container">
+            <div class="header-character">
+
+                <div class="header-character-image">
+                    <%- character.image ? `<img id="imageView" src="/images/${character.image}" style="width: 200px; height: 200px;"/>` : '' %>
+                </div>
+                <div class="header-character-info">
+                    <h1><%= character.name %></h1>
+                </div>
+            </div>
+            <div class="character-content">
+                <div class="character-content-left">
+                    <h2><%=locals.character ? character.race : "" %></h2>              
+                    <h2><%=locals.character ? character.class : "" %></h2>
+                    <h2>Level: <%=locals.character ? character.level : "" %></h2>                
+                </div>
+                <div class="character-content-right">
+                    <h2>Strength: <%=locals.character ? character.strength : "" %></h2>
+                    <h2>Agility: <%=locals.character ? character.agility : "" %></h2>
+                    <h2>Intellect: <%=locals.character ? character.intellect : "" %></h2>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</body>
+</html>
